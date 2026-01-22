@@ -384,7 +384,8 @@ export function PACalendar({
                         newStatus: newStatus,
                     });
                     const updateData: any = { status: newStatus };
-                    const { error } = await supabase
+                    const supabaseAny = supabase as any;
+                    const { error } = await supabaseAny
                         .from('availability')
                         .update(updateData)
                         .eq('id', currentAvail.id);
