@@ -378,7 +378,7 @@ export default function RegisterPage() {
         if (fetchError || !userData) {
           // If we can't fetch, default to /pc/create-production
           router.replace("/pc/create-production");
-        } else if (userData.production_id) {
+        } else if (userData && 'production_id' in userData && userData.production_id) {
           // User has a production_id, go to dashboard
           router.replace("/pc");
         } else {
