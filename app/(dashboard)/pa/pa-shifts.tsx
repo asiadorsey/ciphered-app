@@ -66,10 +66,17 @@ export function PAShifts({ userId, shifts: initialShifts, pendingCount: initialP
 
     // Real-time subscription for shifts
     useEffect(() => {
+        if (!userId) {
+            console.warn('PA: Cannot subscribe to shifts - userId is missing');
+            return;
+        }
+
         const supabase = createClient();
-        const supabaseAny = supabase as any;
-        const channel = supabaseAny
-            .channel('pa-shifts-changes')
+        // Use unique channel name per user to avoid conflicts
+        const channelName = `pa-shifts-changes-${userId}`;
+        
+        const channel = supabase
+            .channel(channelName)
             .on(
                 'postgres_changes',
                 {
@@ -120,14 +127,32 @@ export function PAShifts({ userId, shifts: initialShifts, pendingCount: initialP
                     }
                 }
             )
-            .subscribe((status) => {
-                if (status === 'CHANNEL_ERROR') {
-                    console.error('PA: Error subscribing to shifts changes');
+            .subscribe((status, err) => {
+                if (status === 'SUBSCRIBED') {
+                    console.log('PA: Successfully subscribed to shifts changes');
+                } else if (status === 'CHANNEL_ERROR') {
+                    console.error('PA: Error subscribing to shifts changes:', err);
+                    console.error('PA: Channel name:', channelName);
+                    console.error('PA: User ID:', userId);
+                    console.error('PA: Filter:', `assigned_pa_id=eq.${userId}`);
+                } else if (status === 'TIMED_OUT') {
+                    console.error('PA: Subscription timed out');
+                } else if (status === 'CLOSED') {
+                    console.warn('PA: Subscription closed');
+                } else {
+                    console.log('PA: Subscription status:', status);
                 }
             });
 
         return () => {
-            supabaseAny.removeChannel(channel);
+            supabase
+                .removeChannel(channel)
+                .then(() => {
+                    console.log('PA: Unsubscribed from shifts changes');
+                })
+                .catch((error) => {
+                    console.error('PA: Error removing channel:', error);
+                });
         };
     }, [userId]);
 
@@ -309,20 +334,20 @@ export function PAShifts({ userId, shifts: initialShifts, pendingCount: initialP
     }, [shifts]);
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-4 md:space-y-4">
             <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-semibold">My Shifts</h2>
+                <h2 className="text-2xl md:text-2xl font-semibold">My Shifts</h2>
                 {pendingCount > 0 && (
-                    <span className="inline-flex items-center justify-center rounded-full bg-yellow-500 text-white text-xs font-semibold px-2.5 py-0.5 min-w-[1.5rem]">
+                    <span className="inline-flex items-center justify-center rounded-full bg-yellow-500 text-white text-sm md:text-xs font-semibold px-3 md:px-2.5 py-1 md:py-0.5 min-w-[1.75rem] md:min-w-[1.5rem]">
                         {pendingCount}
                     </span>
                 )}
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-4 md:space-y-3">
                 {sortedShifts.length === 0 ? (
-                    <div className="p-6 text-center text-muted-foreground border rounded-lg bg-card">
-                        <p>No shifts assigned yet.</p>
+                    <div className="p-6 md:p-6 text-center text-muted-foreground border rounded-lg bg-card">
+                        <p className="text-base md:text-sm">No shifts assigned yet.</p>
                     </div>
                 ) : (
                     sortedShifts.map((shift) => {
@@ -332,17 +357,17 @@ export function PAShifts({ userId, shifts: initialShifts, pendingCount: initialP
                         return (
                             <div
                                 key={shift.id}
-                                className={`p-4 border rounded-lg bg-card ${statusColor} transition-colors`}
+                                className={`p-5 md:p-4 border rounded-lg bg-card ${statusColor} transition-colors`}
                             >
-                                <div className="flex items-start justify-between gap-4">
-                                    <div className="flex-1 space-y-2">
-                                        <div className="flex items-center gap-2">
-                                            <span className="font-semibold">{formatDate(shift.date)}</span>
-                                            <span className={`text-xs px-2 py-0.5 rounded-full border ${statusColor}`}>
+                                <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 md:gap-4">
+                                    <div className="flex-1 space-y-3 md:space-y-2">
+                                        <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-2">
+                                            <span className="font-semibold text-lg md:text-base">{formatDate(shift.date)}</span>
+                                            <span className={`text-sm md:text-xs px-3 md:px-2 py-1 md:py-0.5 rounded-full border ${statusColor} self-start md:self-auto`}>
                                                 {statusBadge}
                                             </span>
                                         </div>
-                                        <div className="space-y-1 text-sm">
+                                        <div className="space-y-2 md:space-y-1 text-base md:text-sm">
                                             <div>
                                                 <span className="font-medium">Call Time:</span>{' '}
                                                 <span className="text-muted-foreground">
@@ -358,12 +383,13 @@ export function PAShifts({ userId, shifts: initialShifts, pendingCount: initialP
                                         </div>
                                     </div>
                                     {shift.confirmation_status === 'pending' && (
-                                        <div className="flex gap-2">
+                                        <div className="flex gap-3 md:gap-2 w-full md:w-auto">
                                             <Button
                                                 size="sm"
                                                 variant="outline"
                                                 onClick={() => declineShift(shift.id)}
                                                 disabled={isLoading === shift.id}
+                                                className="flex-1 md:flex-none min-h-[44px] md:min-h-0 text-base md:text-sm"
                                             >
                                                 {isLoading === shift.id ? '...' : 'Decline'}
                                             </Button>
@@ -371,6 +397,7 @@ export function PAShifts({ userId, shifts: initialShifts, pendingCount: initialP
                                                 size="sm"
                                                 onClick={() => confirmShift(shift.id)}
                                                 disabled={isLoading === shift.id}
+                                                className="flex-1 md:flex-none min-h-[44px] md:min-h-0 text-base md:text-sm"
                                             >
                                                 {isLoading === shift.id ? '...' : 'Confirm'}
                                             </Button>

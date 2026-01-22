@@ -50,23 +50,23 @@ async function getDailyOverviewData() {
     const paIds = (pas || []).map(pa => pa.id);
 
     // Fetch shifts for PAs in this production (we'll filter by date on the client side)
-    let shiftsQuery = supabase
-        .from('shifts')
-        .select('*')
-        .order('date');
-
-    // Only filter by PA IDs if we have PAs in this production
-    if (paIds.length > 0) {
-        shiftsQuery = shiftsQuery.in('assigned_pa_id', paIds);
+    let shifts;
+    
+    // When there are no PAs
+    if (paIds.length === 0) {
+        shifts = [];
     } else {
-        // If no PAs match, return empty array to ensure no shifts are shown
-        shiftsQuery = shiftsQuery.eq('assigned_pa_id', 'no-match');
-    }
+        const { data, error: shiftsError } = await supabase
+            .from('shifts')
+            .select('*')
+            .in('assigned_pa_id', paIds)
+            .order('date');
 
-    const { data: shifts, error: shiftsError } = await shiftsQuery;
-
-    if (shiftsError) {
-        throw new Error(`Failed to fetch shifts: ${shiftsError.message}`);
+        if (shiftsError) {
+            throw new Error(`Failed to fetch shifts: ${shiftsError.message}`);
+        }
+        
+        shifts = data || [];
     }
 
     return {

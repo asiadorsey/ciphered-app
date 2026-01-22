@@ -152,19 +152,21 @@ export default async function PADashboardPage() {
     ).length;
 
     return (
-        <div className="container mx-auto p-6 space-y-8">
+        <div className="container mx-auto p-4 md:p-6 space-y-6 md:space-y-8">
             <PARealtimeSubscriptions />
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-0">
                 <div>
-                    <h1 className="text-3xl font-bold">Production Assistant Dashboard</h1>
-                    <p className="text-muted-foreground mt-1">
+                    <h1 className="text-2xl md:text-3xl font-bold">Production Assistant Dashboard</h1>
+                    <p className="text-muted-foreground mt-1 text-sm md:text-base">
                         Welcome back, {data.user.name}
                     </p>
                 </div>
-                <LogoutButton />
+                <div className="self-start md:self-auto">
+                    <LogoutButton />
+                </div>
             </div>
 
-            <div className="grid gap-8 lg:grid-cols-3">
+            <div className="grid gap-6 md:gap-8 lg:grid-cols-3">
                 {/* Calendar View - Takes 2 columns on large screens */}
                 <div className="lg:col-span-2">
                     <Suspense fallback={<LoadingState />}>
@@ -179,7 +181,7 @@ export default async function PADashboardPage() {
                 </div>
 
                 {/* My Shifts and Profile - Takes 1 column on large screens */}
-                <div className="space-y-8">
+                <div className="space-y-6 md:space-y-8">
                     <Suspense fallback={<LoadingState />}>
                         <PAShifts
                             userId={data.user.id}

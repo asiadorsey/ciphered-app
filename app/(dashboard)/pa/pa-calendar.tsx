@@ -582,26 +582,27 @@ export function PACalendar({
     const currentMonthValue = formatMonthKey(selectedYear, selectedMonth);
 
     return (
-        <div className="space-y-4">
-            <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-semibold">My Availability</h2>
-                <p className="text-sm text-muted-foreground">Click dates to cycle availability • Click note icon to add notes</p>
+        <div className="space-y-4 md:space-y-4">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-0">
+                <h2 className="text-2xl md:text-2xl font-semibold">My Availability</h2>
+                <p className="text-sm md:text-sm text-muted-foreground">Click dates to cycle availability • Click note icon to add notes</p>
             </div>
 
             {/* Month Navigation Controls */}
-            <div className="flex items-center justify-between gap-4 p-4 bg-card border rounded-lg">
-                <div className="flex items-center gap-2">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 p-4 md:p-4 bg-card border rounded-lg">
+                <div className="flex items-center gap-2 md:gap-2">
                     <Button
                         variant="outline"
                         size="sm"
                         onClick={goToPreviousMonth}
                         disabled={!canGoPrevious || isLoadingAvailability}
+                        className="min-h-[44px] min-w-[44px] md:min-h-0 md:min-w-0"
                     >
-                        <ChevronLeft className="h-4 w-4" />
+                        <ChevronLeft className="h-5 w-5 md:h-4 md:w-4" />
                     </Button>
                     
                     <Select value={currentMonthValue} onValueChange={handleMonthSelect} disabled={isLoadingAvailability}>
-                        <SelectTrigger className="w-[180px]">
+                        <SelectTrigger className="w-full md:w-[180px] min-h-[44px] md:min-h-0">
                             <SelectValue placeholder="Select month" />
                         </SelectTrigger>
                         <SelectContent>
@@ -618,8 +619,9 @@ export function PACalendar({
                         size="sm"
                         onClick={goToNextMonth}
                         disabled={!canGoNext || isLoadingAvailability}
+                        className="min-h-[44px] min-w-[44px] md:min-h-0 md:min-w-0"
                     >
-                        <ChevronRight className="h-4 w-4" />
+                        <ChevronRight className="h-5 w-5 md:h-4 md:w-4" />
                     </Button>
                 </div>
                 
@@ -628,16 +630,17 @@ export function PACalendar({
                     size="sm"
                     onClick={goToCurrentMonth}
                     disabled={isCurrentMonth || isLoadingAvailability}
+                    className="min-h-[44px] md:min-h-0 w-full md:w-auto"
                 >
                     Current Month
                 </Button>
             </div>
 
-            <div className="border rounded-lg p-6 bg-card">
+            <div className="border rounded-lg p-3 md:p-6 bg-card">
                 {/* Weekday headers */}
-                <div className="grid grid-cols-7 gap-2 mb-2">
+                <div className="grid grid-cols-7 gap-1 md:gap-2 mb-2">
                     {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-                        <div key={day} className="text-center text-sm font-semibold text-muted-foreground py-2">
+                        <div key={day} className="text-center text-xs md:text-sm font-semibold text-muted-foreground py-2">
                             {day}
                         </div>
                     ))}
@@ -651,7 +654,7 @@ export function PACalendar({
                         </div>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-7 gap-2">
+                    <div className="grid grid-cols-7 gap-1 md:gap-2">
                         {dates.map((dateInfo) => {
                         const date = new Date(dateInfo.date);
                         const isCurrentMonth = date.getMonth() === selectedMonth && date.getFullYear() === selectedYear;
@@ -665,7 +668,7 @@ export function PACalendar({
                         return (
                             <div
                                 key={dateInfo.date}
-                                className={`flex flex-col items-center gap-1 p-2 rounded-lg border transition-colors ${
+                                className={`flex flex-col items-center gap-1 md:gap-1 p-1 md:p-2 rounded-lg border transition-colors ${
                                     isCurrentMonth 
                                         ? 'hover:border-primary' 
                                         : 'opacity-40 hover:opacity-60'
@@ -674,23 +677,23 @@ export function PACalendar({
                                 <button
                                     onClick={() => handleDateClick(dateInfo.date)}
                                     disabled={isLoading || !isCurrentMonth}
-                                    className={`w-full py-2 px-3 rounded-md text-xs font-medium transition-colors ${colorClass} ${
+                                    className={`w-full min-h-[44px] md:min-h-0 py-2 md:py-2 px-1 md:px-3 rounded-md text-sm md:text-xs font-medium transition-colors ${colorClass} ${
                                         !isCurrentMonth ? 'opacity-50' : ''
                                     } disabled:opacity-50 disabled:cursor-not-allowed`}
                                     title={`${dateInfo.display}: ${getStatusLabel(status)}`}
                                 >
                                     <div className="text-center">
-                                        <div className={`font-semibold ${isToday && isCurrentMonth ? 'underline' : ''}`}>
+                                        <div className={`font-semibold text-base md:text-sm ${isToday && isCurrentMonth ? 'underline' : ''}`}>
                                             {dateInfo.day}
                                         </div>
-                                        <div className="text-[10px] opacity-80">{dateInfo.dayName}</div>
+                                        <div className="text-xs md:text-[10px] opacity-80">{dateInfo.dayName}</div>
                                     </div>
                                 </button>
                                 {isCurrentMonth && (
                                     <button
                                         onClick={() => handleNoteClick(dateInfo.date)}
                                         disabled={isLoading}
-                                        className={`text-xs p-1 rounded hover:bg-muted transition-colors ${
+                                        className={`text-base md:text-xs p-2 md:p-1 min-h-[44px] md:min-h-0 min-w-[44px] md:min-w-0 rounded hover:bg-muted transition-colors ${
                                             hasNote ? 'text-primary' : 'text-muted-foreground'
                                         }`}
                                         title={hasNote ? avail?.pa_note || 'Edit note' : 'Add note'}
@@ -706,22 +709,22 @@ export function PACalendar({
             </div>
 
             {/* Legend */}
-            <div className="flex flex-wrap gap-4 p-4 bg-card border rounded-lg">
+            <div className="flex flex-wrap gap-4 md:gap-4 p-4 md:p-4 bg-card border rounded-lg">
                 <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded bg-green-600"></div>
-                    <span className="text-sm">Preferred</span>
+                    <div className="w-5 h-5 md:w-4 md:h-4 rounded bg-green-600"></div>
+                    <span className="text-base md:text-sm">Preferred</span>
                 </div>
                 <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded bg-green-300"></div>
-                    <span className="text-sm">Available</span>
+                    <div className="w-5 h-5 md:w-4 md:h-4 rounded bg-green-300"></div>
+                    <span className="text-base md:text-sm">Available</span>
                 </div>
                 <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded bg-red-300"></div>
-                    <span className="text-sm">Unavailable</span>
+                    <div className="w-5 h-5 md:w-4 md:h-4 rounded bg-red-300"></div>
+                    <span className="text-base md:text-sm">Unavailable</span>
                 </div>
                 <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded bg-gray-100"></div>
-                    <span className="text-sm">Not Set</span>
+                    <div className="w-5 h-5 md:w-4 md:h-4 rounded bg-gray-100"></div>
+                    <span className="text-base md:text-sm">Not Set</span>
                 </div>
             </div>
 

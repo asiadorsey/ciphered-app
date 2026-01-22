@@ -641,8 +641,8 @@ export function AvailabilityGrid({
           Previous Week
         </Button>
 
-        <div className="text-center">
-          <h2 className="text-lg font-semibold">
+        <div className="text-center px-2 md:px-0">
+          <h2 className="text-xl font-bold text-foreground md:text-lg md:font-semibold py-2 md:py-0">
             {formatWeekDisplay(selectedWeekMonday)}
           </h2>
         </div>
@@ -825,62 +825,65 @@ export function AvailabilityGrid({
           }
         }}
       >
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="w-[95vw] max-w-md max-h-[90vh] overflow-y-auto rounded-lg p-4 sm:max-w-[500px] sm:p-6">
           <DialogHeader>
             <DialogTitle>Assign Shift</DialogTitle>
             <DialogDescription>
               Assign a shift to {selectedCell?.paName} on {selectedCell?.dateDisplay}
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 py-4">
+          <div className="overflow-y-auto space-y-4 py-4">
             <div className="space-y-2">
-              <Label>PA Name</Label>
+              <Label className="text-sm">PA Name</Label>
               <div className="text-sm font-medium">{selectedCell?.paName}</div>
             </div>
             <div className="space-y-2">
-              <Label>Date</Label>
+              <Label className="text-sm">Date</Label>
               <div className="text-sm font-medium">{selectedCell?.dateDisplay}</div>
             </div>
             {selectedCell?.paNote && (
               <div className="space-y-2">
-                <Label>PA Note</Label>
+                <Label className="text-sm">PA Note</Label>
                 <div className="text-sm text-muted-foreground p-2 bg-muted rounded-md">
                   {selectedCell.paNote}
                 </div>
               </div>
             )}
             <div className="space-y-2">
-              <Label htmlFor="call-time">Call Time</Label>
+              <Label htmlFor="call-time" className="text-sm">Call Time</Label>
               <Input
                 id="call-time"
                 type="time"
                 value={callTime}
                 onChange={(e) => setCallTime(e.target.value)}
                 placeholder="HH:MM"
+                className="h-9 text-sm sm:h-10"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="wrap-time">Wrap Time</Label>
+              <Label htmlFor="wrap-time" className="text-sm">Wrap Time</Label>
               <Input
                 id="wrap-time"
                 type="time"
                 value={wrapTime}
                 onChange={(e) => setWrapTime(e.target.value)}
                 placeholder="HH:MM"
+                className="h-9 text-sm sm:h-10"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="location">Location</Label>
+              <Label htmlFor="location" className="text-sm">Location</Label>
               <Input
                 id="location"
                 type="text"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="Enter location"
+                className="h-9 text-sm sm:h-10"
               />
             </div>
           </div>
-          <DialogFooter>
+          <DialogFooter className="flex-col sm:flex-row gap-2">
             <Button
               variant="outline"
               onClick={() => {
@@ -890,10 +893,11 @@ export function AvailabilityGrid({
                 setWrapTime('');
                 setLocation('');
               }}
+              className="w-full sm:w-auto"
             >
               Cancel
             </Button>
-            <Button onClick={createShift} disabled={isLoading}>
+            <Button onClick={createShift} disabled={isLoading} className="w-full sm:w-auto">
               {isLoading ? 'Assigning...' : 'Assign Shift'}
             </Button>
           </DialogFooter>
@@ -915,38 +919,38 @@ export function AvailabilityGrid({
           }
         }}
       >
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="h-full max-h-screen w-full max-w-full p-4 top-0 left-0 right-0 bottom-0 translate-x-0 translate-y-0 rounded-none sm:h-auto sm:max-h-[calc(100%-2rem)] sm:max-w-[500px] sm:p-6 sm:top-[50%] sm:left-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:rounded-lg">
           <DialogHeader>
             <DialogTitle>{isEditMode ? 'Edit Shift' : 'Shift Details'}</DialogTitle>
             <DialogDescription>
               {selectedCell?.paName} - {selectedCell?.dateDisplay}
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 py-4">
+          <div className="overflow-y-auto space-y-4 py-4">
             {!isEditMode ? (
               <>
                 <div className="space-y-2">
-                  <Label>PA Name</Label>
+                  <Label className="text-sm">PA Name</Label>
                   <div className="text-sm font-medium">{selectedCell?.paName}</div>
                 </div>
                 <div className="space-y-2">
-                  <Label>Date</Label>
+                  <Label className="text-sm">Date</Label>
                   <div className="text-sm font-medium">{selectedCell?.dateDisplay}</div>
                 </div>
                 <div className="space-y-2">
-                  <Label>Call Time</Label>
+                  <Label className="text-sm">Call Time</Label>
                   <div className="text-sm">
                     {selectedCell?.shift?.call_time || 'Not set'}
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label>Wrap Time</Label>
+                  <Label className="text-sm">Wrap Time</Label>
                   <div className="text-sm">
                     {selectedCell?.shift?.wrap_time || 'Not set'}
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label>Confirmation Status</Label>
+                  <Label className="text-sm">Confirmation Status</Label>
                   <div
                     className={`text-sm font-medium ${getConfirmationStatusColor(
                       selectedCell?.shift?.confirmation_status || 'pending'
@@ -962,35 +966,38 @@ export function AvailabilityGrid({
             ) : (
               <>
                 <div className="space-y-2">
-                  <Label htmlFor="edit-call-time">Call Time</Label>
+                  <Label htmlFor="edit-call-time" className="text-sm">Call Time</Label>
                   <Input
                     id="edit-call-time"
                     type="time"
                     value={callTime}
                     onChange={(e) => setCallTime(e.target.value)}
+                    className="h-9 text-sm sm:h-10"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="edit-wrap-time">Wrap Time</Label>
+                  <Label htmlFor="edit-wrap-time" className="text-sm">Wrap Time</Label>
                   <Input
                     id="edit-wrap-time"
                     type="time"
                     value={wrapTime}
                     onChange={(e) => setWrapTime(e.target.value)}
+                    className="h-9 text-sm sm:h-10"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="edit-location">Location</Label>
+                  <Label htmlFor="edit-location" className="text-sm">Location</Label>
                   <Input
                     id="edit-location"
                     type="text"
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
                     placeholder="Enter location"
+                    className="h-9 text-sm sm:h-10"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Confirmation Status</Label>
+                  <Label className="text-sm">Confirmation Status</Label>
                   <div
                     className={`text-sm font-medium ${getConfirmationStatusColor(
                       selectedCell?.shift?.confirmation_status || 'pending'
@@ -1005,13 +1012,14 @@ export function AvailabilityGrid({
               </>
             )}
           </div>
-          <DialogFooter>
+          <DialogFooter className="flex-col sm:flex-row gap-2">
             {!isEditMode ? (
               <>
                 <Button
                   variant="destructive"
                   onClick={deleteShift}
                   disabled={isLoading}
+                  className="w-full sm:w-auto"
                 >
                   {isLoading ? 'Removing...' : 'Remove Assignment'}
                 </Button>
@@ -1025,10 +1033,13 @@ export function AvailabilityGrid({
                     setWrapTime('');
                     setLocation('');
                   }}
+                  className="w-full sm:w-auto"
                 >
                   Close
                 </Button>
-                <Button onClick={() => setIsEditMode(true)}>Edit Shift</Button>
+                <Button onClick={() => setIsEditMode(true)} className="w-full sm:w-auto">
+                  Edit Shift
+                </Button>
               </>
             ) : (
               <>
@@ -1041,10 +1052,11 @@ export function AvailabilityGrid({
                       setWrapTime(selectedCell.shift.wrap_time || '');
                     }
                   }}
+                  className="w-full sm:w-auto"
                 >
                   Cancel
                 </Button>
-                <Button onClick={updateShift} disabled={isLoading}>
+                <Button onClick={updateShift} disabled={isLoading} className="w-full sm:w-auto">
                   {isLoading ? 'Saving...' : 'Save Changes'}
                 </Button>
               </>
