@@ -124,7 +124,7 @@ Please log in to confirm or decline this shift assignment.
 View your shifts: ${getAppUrl()}/pa
 
 Best regards,
-ProdFlow Team
+Ciphered Team
   `.trim();
 
   // Log email for development
@@ -152,7 +152,7 @@ ProdFlow Team
 
     try {
       await resend.emails.send({
-        from: 'ProdFlow <noreply@yourdomain.com>',
+        from: 'Ciphered <noreply@yourdomain.com>',
         to: data.paEmail,
         subject: subject,
         html: convertToHTML(emailBody),
@@ -194,7 +194,7 @@ ${data.confirmationStatus === 'declined' ? '\nPlease assign this shift to anothe
 View schedule: ${getAppUrl()}/pc
 
 Best regards,
-ProdFlow Team
+Ciphered Team
   `.trim();
 
   // Log email for development
@@ -222,7 +222,7 @@ ProdFlow Team
 
     try {
       await resend.emails.send({
-        from: 'ProdFlow <onboarding@resend.dev>', // Resend's test domain
+        from: 'Ciphered <onboarding@resend.dev>', // Resend's test domain
         to: data.pcEmail,
         subject: subject,
         html: convertToHTML(emailBody),

@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ProdFlow",
-  description: "Production Flow Management",
+  title: "Ciphered - Production Scheduling",
+  description: "Streamline your department's production crew scheduling",
 };
 
 export default function RootLayout({

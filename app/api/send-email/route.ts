@@ -131,7 +131,7 @@ Please log in to confirm or decline this shift assignment.
 View your shifts: ${getAppUrl()}/pa
 
 Best regards,
-ProdFlow Team
+Ciphered Team
     `.trim();
 
     // Send email via Resend
@@ -142,7 +142,7 @@ ProdFlow Team
     const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
     
     const emailPayload = {
-      from: fromEmail.includes('@') ? fromEmail : `ProdFlow <${fromEmail}>`,
+      from: fromEmail.includes('@') ? fromEmail : `Ciphered <${fromEmail}>`,
       to: body.paEmail,
       subject: subject,
       html: convertToHTML(emailBody),
