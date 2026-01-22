@@ -34,7 +34,8 @@ export function PAProfile({ user: initialUser }: PAProfileProps) {
 
         try {
             const supabase = createClient();
-            const { error } = await supabase
+            const supabaseAny = supabase as any;
+            const { error } = await supabaseAny
                 .from('users')
                 .update({
                     phone: phone || null,
