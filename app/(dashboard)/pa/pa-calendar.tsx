@@ -185,7 +185,8 @@ export function PACalendar({
             setIsLoadingAvailability(true);
             try {
                 const supabase = createClient();
-                const { data, error } = await supabase
+                const supabaseAny = supabase as any;
+                const { data, error } = await supabaseAny
                     .from('availability')
                     .select('*')
                     .eq('user_id', userId)
@@ -367,7 +368,8 @@ export function PACalendar({
                             date: currentAvail.date,
                             status: currentAvail.status,
                         });
-                        const { error } = await supabase
+                        const supabaseAny = supabase as any;
+                        const { error } = await supabaseAny
                             .from('availability')
                             .delete()
                             .eq('id', currentAvail.id);
@@ -400,7 +402,8 @@ export function PACalendar({
                         dateFormat: 'ISO string format (YYYY-MM-DD)',
                         rawQuery: `INSERT INTO availability (user_id, date, status) VALUES ('${userId}', '${date}', '${newStatus}')`,
                     });
-                    const { data, error } = await supabase
+                    const supabaseAny = supabase as any;
+                    const { data, error } = await supabaseAny
                         .from('availability')
                         .insert({
                             user_id: userId,
@@ -429,7 +432,8 @@ export function PACalendar({
             } catch (error) {
                 // Re-fetch availability to sync state on error
                 const supabase = createClient();
-                const { data } = await supabase
+                const supabaseAny = supabase as any;
+                const { data } = await supabaseAny
                     .from('availability')
                     .select('*')
                     .eq('user_id', userId)
@@ -499,7 +503,8 @@ export function PACalendar({
                     date: currentAvail.date,
                     note: currentNote || null,
                 });
-                const { error } = await supabase
+                const supabaseAny = supabase as any;
+                const { error } = await supabaseAny
                     .from('availability')
                     .update({ pa_note: currentNote || null })
                     .eq('id', currentAvail.id);
@@ -515,7 +520,8 @@ export function PACalendar({
                     dateFormat: 'ISO string format (YYYY-MM-DD)',
                     rawQuery: `INSERT INTO availability (user_id, date, status, pa_note) VALUES ('${userId}', '${selectedDate}', 'available', ${currentNote ? `'${currentNote}'` : 'NULL'})`,
                 });
-                const { data, error } = await supabase
+                const supabaseAny = supabase as any;
+                const { data, error } = await supabaseAny
                     .from('availability')
                     .insert({
                         user_id: userId,
@@ -549,7 +555,8 @@ export function PACalendar({
         } catch (error) {
             // Re-fetch availability to sync state on error
             const supabase = createClient();
-            const { data } = await supabase
+            const supabaseAny = supabase as any;
+            const { data } = await supabaseAny
                 .from('availability')
                 .select('*')
                 .eq('user_id', userId)
