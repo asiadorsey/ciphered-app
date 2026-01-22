@@ -67,7 +67,8 @@ export function PAShifts({ userId, shifts: initialShifts, pendingCount: initialP
     // Real-time subscription for shifts
     useEffect(() => {
         const supabase = createClient();
-        const channel = supabase
+        const supabaseAny = supabase as any;
+        const channel = supabaseAny
             .channel('pa-shifts-changes')
             .on(
                 'postgres_changes',
@@ -126,7 +127,7 @@ export function PAShifts({ userId, shifts: initialShifts, pendingCount: initialP
             });
 
         return () => {
-            supabase.removeChannel(channel);
+            supabaseAny.removeChannel(channel);
         };
     }, [userId]);
 
@@ -152,7 +153,8 @@ export function PAShifts({ userId, shifts: initialShifts, pendingCount: initialP
 
             try {
                 const supabase = createClient();
-                const { data, error } = await supabase
+                const supabaseAny = supabase as any;
+                const { data, error } = await supabaseAny
                     .from('shifts')
                     .update({ confirmation_status: 'confirmed' })
                     .eq('id', shiftId)
@@ -168,10 +170,10 @@ export function PAShifts({ userId, shifts: initialShifts, pendingCount: initialP
                 try {
                     if (data && data.assigned_by_id) {
                         // Fetch PA details (name)
-                        const paDetails = await getUserDetails(userId, supabase);
+                        const paDetails = await getUserDetails(userId, supabaseAny);
                         
                         // Fetch PC details (email) from assigned_by_id
-                        const pcDetails = await getUserDetails(data.assigned_by_id, supabase);
+                        const pcDetails = await getUserDetails(data.assigned_by_id, supabaseAny);
 
                         if (pcDetails?.email && paDetails?.name) {
                             await sendShiftConfirmationEmail({
@@ -234,7 +236,8 @@ export function PAShifts({ userId, shifts: initialShifts, pendingCount: initialP
 
             try {
                 const supabase = createClient();
-                const { data, error } = await supabase
+                const supabaseAny = supabase as any;
+                const { data, error } = await supabaseAny
                     .from('shifts')
                     .update({ confirmation_status: 'declined' })
                     .eq('id', shiftId)
@@ -250,10 +253,10 @@ export function PAShifts({ userId, shifts: initialShifts, pendingCount: initialP
                 try {
                     if (data && data.assigned_by_id) {
                         // Fetch PA details (name)
-                        const paDetails = await getUserDetails(userId, supabase);
+                        const paDetails = await getUserDetails(userId, supabaseAny);
                         
                         // Fetch PC details (email) from assigned_by_id
-                        const pcDetails = await getUserDetails(data.assigned_by_id, supabase);
+                        const pcDetails = await getUserDetails(data.assigned_by_id, supabaseAny);
 
                         if (pcDetails?.email && paDetails?.name) {
                             await sendShiftConfirmationEmail({
